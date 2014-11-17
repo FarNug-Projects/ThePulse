@@ -15,6 +15,9 @@
 		
 		searchedArtistAlbums = [];
 		currentArtistAlbum = undefined;
+		if(previewAudio) {
+			previewAudio.pause();
+		}
 		previewAudio = undefined;
 		previewAudioPlaying = false;
 		
