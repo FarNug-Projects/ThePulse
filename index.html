@@ -21,10 +21,12 @@
 		//clean the search term
 		cleanSearchTerm();
 	
-		// call the spotify web service, and download the file
+		// call the spotify and echonest web services, and download the files for each
 		spotifySearch(searchedArtist);
+		echonestSearch(searchedArtist, 5);
 		
 		$("#content").fadeOut(250);
+		$("#news").fadeOut(250);
 		
 	}
 	
@@ -39,122 +41,34 @@
 		if(searchedArtist.length < 1) return;
 		
 		document.querySelector("#content").innerHTML = "<b>Searching for " + searchedArtist + "</b>";
+		document.querySelector("#news").innerHTML = "<b>Searching for " + searchedArtist + "</b>";
 		
 		// replace spaces the user typed in the middle of the term with %20
 		// %20 is the hexadecimal value for a space
 		searchedArtist = encodeURI(searchedArtist);
 	}
-	
-	/*function spotifySearch(){
-		// build up our artist search URL
-		var searchArtistURL = SPOTIFY_SEARCH_URL + searchedArtist + "&type=artist";
-		
-		//get the 
-		$.getJSON(searchArtistURL).done(function(data){spotifyArtistSearchJSONLoaded(data);});
-	}
-	
-	function spotifyArtistSearchJSONLoaded(obj){
-		if(obj.error){
-			console.log("length=" + obj.results.albummatches.album.length);
-			document.querySelector("#content").innerHTML = "<b>No Results Found</b>";
-		} else {
-			var allArtists = obj.artists.items;
-			console.log("allArtists.length = " + allArtists.length);
-			
-			//search for the most popular artist
-			var mostPopularArtist = undefined;
-			var mostPopularArtistPopularity = 0;
-			var mostPopularArtistID = undefined;
-			
-			for (var i=0;i<allArtists.length;i++){
-				var artist = allArtists[i];
-				var id = artist.id;
-				var popularity = artist.popularity;
-				
-				//if the artist has the most popularity, make them the most popular artist
-				if( popularity > mostPopularArtistPopularity)
-				{
-					mostPopularArtist = artist;
-					mostPopularArtistPopularity = popularity;
-					mostPopularArtistID = id;
-				}
-			}
-			
-			//set the searched Artist's id to the most popular artist result's
-			searchedArtistSpotifyID = mostPopularArtistID;
-			searchedArtistSpotifyID = searchedArtistSpotifyID.trim();
-			console.log("Artist ID: " + searchedArtistSpotifyID);
-			document.querySelector("#content").innerHTML = searchedArtistSpotifyID;
-			
-			$("#content").fadeIn(1000);
-			
-			// search for the specific artist's albums
-			var getArtistAlbumURL = SPOTIFY_GET_ARTIST_URL + searchedArtistSpotifyID + "/albums/";
-			$.getJSON(getArtistAlbumURL).done(function(data){spotifyAlbumJSONLoaded(data);});
-		}
-	}
-	
-	function spotifyAlbumJSONLoaded(obj){		
-		if(obj.error){
-			console.log("length=" + obj.results.albummatches.album.length);
-			document.querySelector("#content").innerHTML = "<b>No Results Found</b>";
-		} else {
-			var allAlbums = obj.items;
-			console.log("allAlbums.length = " + allAlbums.length);
-			
-			
-			var bigString = "";
-			
-			for (var i=0;i<allAlbums.length;i++){
-				var album = allAlbums[i];
-				var name = album.name;
-				var id = album.id;
-				var imageURL = album.images[1].url;
-				
-				var previousAlbum;
-				var previousName;
-				
-				if(i > 0)
-				{
-					previousAlbum = allAlbums[i-1];
-					previousName = previousAlbum.name;
-				}
-				
-				if(name != previousName)
-				{
-					var line = "<div class = " + "album" +">";
-					line += "<img src='" + imageURL + "' />";
-					line += "<div class=" + "album-info" + ">";
-					line +=  "<p class =" + "album-preview" + ">";
-					line += "Click to preview";
-					line += "</p>";
-					line += "</div></div>";
-					bigString += line;
-				}
-			}
-			document.querySelector("#content").innerHTML = bigString;
-			
-			$("#content").fadeIn(1000);
-			
-		}
-	}	*/
   </script>
   
   
 </head>
 <body>
- <h1>Music Finder</h1>
+	<h1>Music Finder</h1>
 
 
-<button type="button" id="search">Search<br /></button>
-What is your wish? -&gt; <input id="searchterm" type="text" size="20" maxlength="20" value="Jack Johnson" /> 
+	<button type="button" id="search">Search<br /></button>
+	<input id="searchterm" type="text" size="20" maxlength="20" value="Jack Johnson" /> 
 
-<h2>Results</h2>
- <div id="content">
- <p>No data yet!</p>
- </div>
+	<h2>Results</h2>
+	<div id="content">
+		<p>No data yet!</p>
+	</div>
 
- <script src="js/SpotifyManager.js"></script> 
+	<h2>News</h2>
+	<div id="news">
+		<p>No data yet!</p>
+	</div>
 
+	<script src="js/SpotifyManager.js"></script>
+	<script src="js/EchonestManager.js"></script>  
 </body>
 </html>
