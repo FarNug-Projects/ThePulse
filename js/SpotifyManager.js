@@ -130,7 +130,7 @@
 	{
 		currentArtistAlbum = searchedArtistAlbums[0];
 	
-		var bigString = "";
+		var html = "";
 		
 		//current album
 		var line = "<div class = " + "album " +"onClick= spotifyAlbumPreview()>";
@@ -145,7 +145,7 @@
 					}
 					line += "</div>";
 					
-					bigString += line;
+					html += line;
 		
 		//all albums
 		/*for (var i=0;i<searchedArtistAlbums.length;i++){
@@ -178,7 +178,8 @@
 					bigString += line;
 				}
 			}*/
-			document.querySelector("#content").innerHTML = bigString;
+			document.querySelector("#album").innerHTML = html;
+			document.querySelector("#loading").innerHTML = "";
 			
-			$("#content").fadeIn(1000);
+			$("#album").fadeIn(1000);
 	}

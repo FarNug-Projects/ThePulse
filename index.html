@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
- 	<title>Music Finder</title>
+ 	<title>The Pulse</title>
 	<!-- Import jQuery -->
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <link rel="stylesheet" type="text/css" href="css/album-preview.css"/>
@@ -25,7 +25,7 @@
 		spotifySearch(searchedArtist);
 		echonestSearch(searchedArtist, 5);
 		
-		$("#content").fadeOut(250);
+		$("#album").fadeOut(250);
 		$("#news").fadeOut(250);
 		
 	}
@@ -40,8 +40,7 @@
 		// if there's no band to search then bail out of the function (return does this)
 		if(searchedArtist.length < 1) return;
 		
-		document.querySelector("#content").innerHTML = "<b>Searching for " + searchedArtist + "</b>";
-		document.querySelector("#news").innerHTML = "<b>Searching for " + searchedArtist + "</b>";
+		document.querySelector("#loading").innerHTML = "<b>Searching for " + searchedArtist + "</b>";
 		
 		// replace spaces the user typed in the middle of the term with %20
 		// %20 is the hexadecimal value for a space
@@ -52,20 +51,23 @@
   
 </head>
 <body>
-	<h1>Music Finder</h1>
+	<h1>The Pulse</h1>
 
 
 	<button type="button" id="search">Search<br /></button>
 	<input id="searchterm" type="text" size="20" maxlength="20" value="Jack Johnson" /> 
 
-	<h2>Results</h2>
-	<div id="content">
+	<div id="loading">
 		<p>No data yet!</p>
 	</div>
+	
+	<div id="results">
+		<div id="album">
+		</div>
 
-	<h2>News</h2>
-	<div id="news">
-		<p>No data yet!</p>
+		<h2>News</h2>
+		<div id="news">
+		</div>
 	</div>
 
 	<script src="js/SpotifyManager.js"></script>
