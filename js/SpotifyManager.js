@@ -71,7 +71,31 @@
 		if(obj.error){
 			document.querySelector("#content").innerHTML = "<b>No Results Found</b>";
 		} else {
-			var allAlbums = obj.items;
+			var results = obj.items;
+			var allAlbums = [];
+			
+			var album;
+			var albumIndex
+			var previousAlbum;
+			var previousAlbumIndex;
+			
+			
+			for(var i = 0; i < results.length; i++)
+			{
+				albumIndex = i;
+				album = results[albumIndex];
+				
+				if(albumIndex > 0){
+					previousAlbumIndex = i - 1;
+					previousAlbum = results[previousAlbumIndex];
+					if(album.name != previousAlbum.name){
+						allAlbums.push(album);
+					}
+				}
+				else{
+					allAlbums.push(album);
+				}
+			}
 			
 			for(var i = 0; i < allAlbums.length; i++)
 			{
@@ -109,15 +133,18 @@
 			previewAudio.play();
 			previewAudio.addEventListener('ended', function(){ 
 				previewAudioPlaying = false;
+				spotifyAlbumTimerPaused = false;
 				buildAlbumContainer();
 			});
 			previewAudioPlaying = true;
+			spotifyAlbumTimerPaused = true; 
 			buildAlbumContainer();
 		}
 		else{
 			if(previewAudio){
 				previewAudio.pause();
 				previewAudioPlaying = false;
+				spotifyAlbumTimerPaused = false
 				buildAlbumContainer();
 			}
 		}
