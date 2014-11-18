@@ -6,8 +6,12 @@
 	var searchedArtistSpotifyID;
 	var searchedArtistAlbums = [];
 	var currentArtistAlbum;
+	var currentArtistAlbumIndex = 0;
 	var previewAudio;
 	var previewAudioPlaying = false;
+	var spotifyLoaded = false;
+	var spotifyAlbumTimer = 1;
+	var spotifyAlbumTimerPaused = false;
 
 	function spotifySearch(artist){
 		// build up our artist search URL
@@ -28,11 +32,9 @@
 	//search for the most popular artist
 	function spotifyArtistSearchJSONLoaded(obj){
 		if(obj.error){
-			console.log("length=" + obj.results.albummatches.album.length);
 			document.querySelector("#content").innerHTML = "<b>No Results Found</b>";
 		} else {
 			var allArtists = obj.artists.items;
-			console.log("allArtists.length = " + allArtists.length);
 			
 			//search for the most popular artist
 			var mostPopularArtist = undefined;
@@ -56,7 +58,6 @@
 			//set the searched Artist's id to the most popular artist result's
 			searchedArtistSpotifyID = mostPopularArtistID;
 			searchedArtistSpotifyID = searchedArtistSpotifyID.trim();
-			console.log("Artist ID: " + searchedArtistSpotifyID);
 			
 			
 			// search for the specific artist's albums
@@ -68,11 +69,9 @@
 	//search for all the artist's albums and then get in depth data about them
 	function spotifyArtistAlbumJSONLoaded(obj){		
 		if(obj.error){
-			console.log("length=" + obj.results.albummatches.album.length);
 			document.querySelector("#content").innerHTML = "<b>No Results Found</b>";
 		} else {
 			var allAlbums = obj.items;
-			console.log("allAlbums.length = " + allAlbums.length);
 			
 			for(var i = 0; i < allAlbums.length; i++)
 			{
@@ -101,8 +100,6 @@
 	
 	//code adapted from http://jsfiddle.net/JMPerez/UT7bQ/187/
 	function spotifyAlbumPreview(){
-		console.log("Title: " + currentArtistAlbum.title);
-		console.log("Preview URL: " + currentArtistAlbum.previewURL);
 		
 		if(previewAudioPlaying == false){
 			if (previewAudio) {
@@ -126,9 +123,10 @@
 		}
 	}
 	
+	//build the album container
 	function buildAlbumContainer()
 	{
-		currentArtistAlbum = searchedArtistAlbums[0];
+		currentArtistAlbum = searchedArtistAlbums[currentArtistAlbumIndex];
 	
 		var html = "";
 		
@@ -182,4 +180,13 @@
 			document.querySelector("#loading").innerHTML = "";
 			
 			$("#album").fadeIn(1000);
+	}
+	
+	//update the album container and rebuild
+	function updateAlbumContainer(){
+		$("#album").fadeOut(250);
+		currentArtistAlbumIndex++;
+		currentArtistAlbumIndex = currentArtistAlbumIndex % searchedArtistAlbums.length;
+		console.log(currentArtistAlbumIndex);
+		buildAlbumContainer();
 	}

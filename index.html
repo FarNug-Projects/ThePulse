@@ -14,20 +14,27 @@
 	
 	function init(){
 		document.querySelector("#search").onclick = getData;
+		update();
 	}
 	
 	// MY FUNCTIONS
 	function getData(){
 		//clean the search term
 		cleanSearchTerm();
-	
-		// call the spotify and echonest web services, and download the files for each
-		spotifySearch(searchedArtist);
-		echonestSearch(searchedArtist, 5);
 		
 		$("#album").fadeOut(250);
 		$("#news").fadeOut(250);
+	
+		// call the spotify and echonest web services, and download the files for each
+		(function(){
+			spotifySearch(searchedArtist);
+			spotifyLoaded = true;
+		})();
 		
+		(function(){
+			echonestSearch(searchedArtist, 5);
+			echonestLoaded = true;
+		})();
 	}
 	
 	function cleanSearchTerm(){
@@ -45,6 +52,27 @@
 		// replace spaces the user typed in the middle of the term with %20
 		// %20 is the hexadecimal value for a space
 		searchedArtist = encodeURI(searchedArtist);
+	}
+	
+	function update(){
+		//update the album if spotify has been loaded
+		if(spotifyLoaded == true)
+		{
+			//update the timer for the album container if it's not paused
+			if(spotifyAlbumTimerPaused == false)
+			{
+				spotifyAlbumTimer++;
+			}
+			
+			if(spotifyAlbumTimer % 1200 == 0)
+			{
+				console.log("Album Updated");
+				updateAlbumContainer();
+			}
+		}
+		
+		//loop
+		requestAnimationFrame(function(){this.update();});
 	}
   </script>
   

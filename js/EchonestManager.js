@@ -5,6 +5,7 @@
 	var ECHONEST_GET_ARTIST_NEWS_URL = "http://developer.echonest.com/api/v4/artist/news?api_key=X49FXQLHTSR1RNIBC";
 	var artist;
 	var allNews = [];
+	var echonestLoaded = false;
 
 	function echonestSearch(artist, articleRange){
 		// Builds the artist search url and the news searh url
@@ -16,8 +17,7 @@
 			echonestNewsSearchJSONLoaded(data);
 			buildNewsContainer();
 		});
-		
-		console.log("This gets called!");
+
 	}
 
 	function echonestArtistSearchJSONLoaded(obj) {
@@ -39,7 +39,7 @@
 	
 	// Builds the news div line by line based on the data in the news array.
 	function buildNewsContainer() {
-		var bigString = "";
+		var html = "";
 		var line = "";
 		
 		for (var i=0; i < allNews.length; i++){
@@ -61,8 +61,10 @@
 			line += "<a href=" + url + " target='_blank'>" + url + "</a>";
 			line += "</article>";
 		}
-		bigString += line;
+		html += line;
 		
-		document.querySelector("#news").innerHTML = bigString;
+		document.querySelector("#news").innerHTML = html;
 		$("#news").fadeIn(1000);
+		
+		echonestLoaded = true;
 	}
