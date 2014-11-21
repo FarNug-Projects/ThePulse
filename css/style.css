@@ -1,0 +1,55 @@
+* {
+	margin: 0;
+	padding: 0;
+	font-family: 'Roboto Condensed', sans-serif;
+}
+
+body {
+	background-image: url("../images/noisy_net.png");
+}
+
+.header {
+	margin: 0 auto;
+	padding: 30px;
+	text-align: center;
+}
+
+.display {
+	margin: 0 auto;
+	width: 85%;
+	background-image: url("../images/retro_intro.png");
+}
+
+.albumContainer {
+	margin: 0;
+	width: 50%;
+	height: 100%;
+	background: white;
+	float: left;
+}
+
+.album {
+	margin: 0 auto;
+	padding: 20px;
+	width: 75%;
+}
+
+.newsContainer {
+	margin: 0;
+	width: 50%;
+	height: 100%;
+	background: white;
+	float: right;
+}
+
+.newsContainer article {
+	margin: 0 auto;
+	padding: 20px;
+	width: 75%;
+}
+
+.controls, h2, p {
+	margin: 0 auto;
+	padding: 10px;
+	text-align: center;
+}

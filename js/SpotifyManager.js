@@ -203,8 +203,8 @@
 					bigString += line;
 				}
 			}*/
-			document.querySelector("#album").innerHTML = html;
-			document.querySelector("#loading").innerHTML = "";
+			document.querySelector("#content").innerHTML = html;
+			//document.querySelector("#loading").innerHTML = "";
 			
 			$("#album").fadeIn(1000);
 	}
