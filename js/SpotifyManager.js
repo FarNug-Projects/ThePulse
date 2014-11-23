@@ -3,6 +3,7 @@
 	var SPOTIFY_SEARCH_URL = "https://api.spotify.com/v1/search?q=";
 	var SPOTIFY_GET_ARTIST_URL = "https://api.spotify.com/v1/artists/";
 	var SPOTIFY_GET_ALBUM_URL = "https://api.spotify.com/v1/albums/";
+	var searchedArtistSpotifyName;
 	var searchedArtistSpotifyID;
 	var searchedArtistAlbums = [];
 	var currentArtistAlbum;
@@ -12,13 +13,20 @@
 	var spotifyLoaded = false;
 	var spotifyAlbumTimer = 1;
 	var spotifyAlbumTimerPaused = false;
+	var spotifySuccessfulSearch = false;
+	var missingAlbumImage = "images/missing_album.png";
+	var albumFound = false;
 
 	function spotifySearch(artist){
+		$("#content").fadeOut(250);
+	
 		// build up our artist search URL
 		var searchArtistURL = SPOTIFY_SEARCH_URL + artist + "&type=artist";
+		console.log(searchArtistURL);
 		
 		searchedArtistAlbums = [];
 		currentArtistAlbum = undefined;
+		currentArtistAlbumIndex = 0;
 		if(previewAudio) {
 			previewAudio.pause();
 		}
@@ -31,9 +39,27 @@
 
 	//search for the most popular artist
 	function spotifyArtistSearchJSONLoaded(obj){
-		if(obj.error){
-			document.querySelector("#content").innerHTML = "<b>No Results Found</b>";
-		} else {
+		if(obj.artists.items.length == 0){
+			var album = {
+				title: "No Album Found for " + searchedArtistSpotifyName,
+				imageURL: missingAlbumImage,
+			}
+				
+			searchedArtistAlbums.push(album);
+			albumFound = false;
+			buildAlbumContainer();
+		} 
+		else if(obj.artists.items.length == 1){
+			var allArtists = obj.artists.items;
+			var artist = allArtists[0];
+			searchedArtistSpotifyID = artist.id;
+			searchedArtistSpotifyID = searchedArtistSpotifyID.trim();
+			
+			// search for the specific artist's albums
+			var getArtistAlbumURL = SPOTIFY_GET_ARTIST_URL + searchedArtistSpotifyID + "/albums/";
+			$.getJSON(getArtistAlbumURL).done(function(data){spotifyArtistAlbumJSONLoaded(data);});
+		}
+		else {
 			var allArtists = obj.artists.items;
 			
 			//search for the most popular artist
@@ -55,6 +81,11 @@
 				}
 			}
 			
+			if(mostPopularArtist == undefined){
+				mostPopularArtist = allArtists[0];
+				mostPopularArtistID = allArtists[0].id;
+			}
+			
 			//set the searched Artist's id to the most popular artist result's
 			searchedArtistSpotifyID = mostPopularArtistID;
 			searchedArtistSpotifyID = searchedArtistSpotifyID.trim();
@@ -68,8 +99,15 @@
 
 	//search for all the artist's albums and then get in depth data about them
 	function spotifyArtistAlbumJSONLoaded(obj){		
-		if(obj.error){
-			document.querySelector("#content").innerHTML = "<b>No Results Found</b>";
+		if(obj.items.length == 0){
+			var album = {
+				title: "No Album Found for " + searchedArtistSpotifyName,
+				imageURL: missingAlbumImage,
+			}
+			
+			albumFound = false;
+			searchedArtistAlbums.push(album);
+			buildAlbumContainer();
 		} else {
 			var results = obj.items;
 			var allAlbums = [];
@@ -79,32 +117,53 @@
 			var previousAlbum;
 			var previousAlbumIndex;
 			
-			
-			for(var i = 0; i < results.length; i++)
-			{
-				albumIndex = i;
-				album = results[albumIndex];
-				
-				if(albumIndex > 0){
-					previousAlbumIndex = i - 1;
-					previousAlbum = results[previousAlbumIndex];
-					if(album.name != previousAlbum.name){
+			//check if there is at least 2 albums
+			if(results.length > 1){
+				for(var i = 0; i < results.length; i++)
+				{
+					albumIndex = i;
+					album = results[albumIndex];
+					
+					//check for duplicates
+					if(albumIndex > 0){
+						albumFound = true;
+						previousAlbumIndex = i - 1;
+						previousAlbum = results[previousAlbumIndex];
+						if(album.name != previousAlbum.name){
+							allAlbums.push(album);
+						}
+					}
+					else{
+						albumFound = true;
 						allAlbums.push(album);
 					}
 				}
-				else{
-					allAlbums.push(album);
-				}
+			}
+			//push a single album
+			else{
+				albumFound = true;
+				album = results[0];
+				allAlbums.push(album);
 			}
 			
-			for(var i = 0; i < allAlbums.length; i++)
-			{
-				var album = allAlbums[i]
-				var getAlbumURL = SPOTIFY_GET_ALBUM_URL + album.id;
-				$.getJSON(getAlbumURL).done(function(data){
-					spotifyAlbumGetJSONLoaded(data);
-					buildAlbumContainer()
-				;});
+			if(albumFound){
+				for(var i = 0; i < allAlbums.length; i++)
+				{
+					var album = allAlbums[i]
+					var getAlbumURL = SPOTIFY_GET_ALBUM_URL + album.id;
+					$.getJSON(getAlbumURL).done(function(data){
+						spotifyAlbumGetJSONLoaded(data);
+						buildAlbumContainer()
+					;});
+				}
+			}
+			else{
+				var album = {
+					title: "No Album Found for " + searchedArtistSpotifyName,
+					imageURL: missingAlbumImage,
+				}
+					
+				allAlbums.push(album);
 			}
 			
 			//searchedArtistAlbums = allAlbums;
@@ -124,6 +183,8 @@
 	
 	//code adapted from http://jsfiddle.net/JMPerez/UT7bQ/187/
 	function spotifyAlbumPreview(){
+		
+		console.log("spotifyAlbumPreview was called");
 		
 		if(previewAudioPlaying == false){
 			if (previewAudio) {
@@ -156,64 +217,52 @@
 		currentArtistAlbum = searchedArtistAlbums[currentArtistAlbumIndex];
 	
 		var html = "";
+		var line = "";
 		
 		//current album
-		var line = "<div class = " + "album " +"onClick= spotifyAlbumPreview()>";
-					line += "<img src='" + currentArtistAlbum.imageURL + "' />";
-					if(!previewAudioPlaying)
-					{
-						line += "<div class=" + "album-info" + ">";
-						line +=  "<p class =" + "album-preview" + ">";
-						line += currentArtistAlbum.title;
-						line += "</p>";
-						line += "</div>";
-					}
-					line += "</div>";
+		if(albumFound){
+			line += "<div class = " + "album" +">";
+			line += "<div id = " + "clickable " + "onClick= spotifyAlbumPreview()>";
+			line += "<img src='" + currentArtistAlbum.imageURL + "' />";
+			line += "</div>";
+			if(!previewAudioPlaying)
+			{
+				line += "<div class=" + "album-info" + ">";
+				line +=  "<p class =" + "album-preview" + ">";
+				line += currentArtistAlbum.title;
+				line += "</p>";
+				line += "</div>";
+			}
+			line += "</div>";
+		}
+		else{
+			line += "<div class = " + "album" + ">";
+			line += "<div id = " + "nonclickable"+">";
+			line += "<img src='" + currentArtistAlbum.imageURL + "' />";
+			line += "</div>";
+			line += "<div class=" + "album-info" + ">";
+			line +=  "<p class =" + "album-preview" + ">";
+			line += currentArtistAlbum.title;
+			line += "</p>";
+			line += "</div>";
+		}
 					
-					html += line;
+		html += line;
 		
-		//all albums
-		/*for (var i=0;i<searchedArtistAlbums.length;i++){
-				var album = searchedArtistAlbums[i];
-				var name = album.name;
-				var id = album.id;
-				var imageURL = album.images[1].url;
-				//var previewTrack = album.tracks.items.preview_url;
-				
-				var previousAlbum;
-				var previousName;
-				
-				if(i > 0)
-				{
-					previousAlbum = searchedArtistAlbums[i-1];
-					previousName = previousAlbum.name;
-				}
-				
-				if(name != previousName)
-				{
-					var line = "<div class = " + "album " +"onClick=" + "spotifyGetPreview()" + ">";
-					line += "<img src='" + imageURL + "' />";
-					line += "<div class=" + "album-info" + ">";
-					line +=  "<p class =" + "album-preview" + ">";
-					line += "Click to preview";
-					line += "</p>";
-					line += "</div>";
-					line += "</div>";
-					
-					bigString += line;
-				}
-			}*/
-			document.querySelector("#content").innerHTML = html;
-			//document.querySelector("#loading").innerHTML = "";
-			
-			$("#album").fadeIn(1000);
+		document.querySelector("#content").innerHTML = html;
+		
+		$("#content").fadeIn(1000);
 	}
 	
 	//update the album container and rebuild
 	function updateAlbumContainer(){
-		$("#album").fadeOut(250);
-		currentArtistAlbumIndex++;
-		currentArtistAlbumIndex = currentArtistAlbumIndex % searchedArtistAlbums.length;
-		console.log(currentArtistAlbumIndex);
+		$("#content").fadeOut(250);
+		if(albumFound){
+
+			currentArtistAlbumIndex++;
+			currentArtistAlbumIndex = currentArtistAlbumIndex % searchedArtistAlbums.length;
+			console.log(currentArtistAlbumIndex);
+			
+		}
 		buildAlbumContainer();
 	}

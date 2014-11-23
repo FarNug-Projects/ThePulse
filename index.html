@@ -24,7 +24,10 @@
 	// MY FUNCTIONS
 	function getData(){
 		//clean the search term
-		cleanSearchTerm();
+		(function(){
+			cleanSearchTerm();
+		})();
+		
 	
 		// call the spotify and echonest web services, and download the files for each
 		(function(){
@@ -70,11 +73,8 @@
 				spotifyAlbumTimer++;
 			}
 			
-			console.log(spotifyAlbumTimer);
-			
 			if(spotifyAlbumTimer % 900 == 0)
 			{
-				console.log("Album Updated");
 				updateAlbumContainer();
 			}
 		}
