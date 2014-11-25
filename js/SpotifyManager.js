@@ -175,7 +175,8 @@
 		var album = {
 			title: result.name,
 			imageURL: result.images[1].url,
-			previewURL: result.tracks.items[0].preview_url
+			previewURL: result.tracks.items[0].preview_url,
+			previewTitle: result.tracks.items[0].name,
 		}
 		searchedArtistAlbums.push(album)
 	}
@@ -217,19 +218,28 @@
 		
 		//current album
 		if(albumFound){
+			if(!previewAudioPlaying)
+				{
+					line += "<div class=" + "album-info" + ">";
+					line +=  "<p class =" + "album-preview" + ">";
+					line += currentArtistAlbum.title;
+					line += "</p>";
+					line += "</div>";
+				}
+			else
+			{
+				line += "<div class=" + "album-info" + ">";
+				line +=  "<p class =" + "album-preview" + ">";
+				line += "Preview: " + currentArtistAlbum.previewTitle;
+				line += "</p>";
+				line += "</div>";
+			}
 			line += "<div class = " + "album" +">";
 			line += "<div id = " + "clickable " + "onClick= spotifyAlbumPreview()>";
 			line += "<img src='" + currentArtistAlbum.imageURL + "' />";
 			line += "</div>";
-			if(!previewAudioPlaying)
-			{
-				line += "<div class=" + "album-info" + ">";
-				line +=  "<p class =" + "album-preview" + ">";
-				line += currentArtistAlbum.title;
-				line += "</p>";
-				line += "</div>";
-			}
 			line += "</div>";
+			
 		}
 		else{
 			line += "<div class = " + "album" + ">";

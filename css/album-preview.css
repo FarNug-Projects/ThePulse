@@ -10,7 +10,6 @@
 	
 	margin: 0 auto;
 	
-	margin-top:7%;
 	margin-bottom:1%;
 	
 	width: 300px;
@@ -31,8 +30,10 @@
 	bottom:55%;
     color:white;
 	text-align: center;
-	font-weight:bold;
 	padding: 1px 0px;
+	width: 300px;
+	margin:0 auto;
+	margin-top:3%;
 }
 
 .column-Info a
