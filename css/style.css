@@ -10,8 +10,12 @@ body {
 
 .header {
 	margin: 0 auto;
-	padding: 30px;
+	padding: 20px;
 	text-align: center;
+	color: #F0F0F0;
+	background-image: url("../images/header1.jpg");
+	background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 
 .display {
@@ -23,33 +27,67 @@ body {
 .albumContainer {
 	margin: 0;
 	width: 50%;
-	height: 100%;
-	background: white;
+	height: 500px;
+	background: #F0F0F0;
 	float: left;
-}
-
-.album {
-	margin: 0 auto;
-	padding: 20px;
-	width: 75%;
 }
 
 .newsContainer {
 	margin: 0;
+	padding: 0px;
 	width: 50%;
-	height: 100%;
-	background: white;
+	height: 400px;
+	background: #F0F0F0;
 	float: right;
+	overflow: auto;
+	
 }
 
 .newsContainer article {
 	margin: 0 auto;
 	padding: 20px;
 	width: 75%;
+	height: 600px;
+
 }
 
 .controls, h2, p {
 	margin: 0 auto;
 	padding: 10px;
 	text-align: center;
+}
+
+#newsControls {
+	margin: 0 auto;
+	padding: 0px;
+	float: right;
+	height: 48px;
+	width: 50%;
+	background: #F0F0F0;
+	text-align: center;
+}
+
+.newsContent {
+	background: #F0F0F0;
+}
+
+#previous {
+	height: 75%;
+	margin-right: 20px;
+}
+
+#next {
+	height: 75%;
+	margin-left: 20px;
+}
+
+button {
+	width: 60px;
+	background-color: #DCDCDC;
+	border: 2px solid #A0A0A0;
+	border-radius: 5px;
+}
+
+#content {
+	
 }

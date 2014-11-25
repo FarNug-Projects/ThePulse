@@ -22,7 +22,6 @@
 	
 		// build up our artist search URL
 		var searchArtistURL = SPOTIFY_SEARCH_URL + artist + "&type=artist";
-		console.log(searchArtistURL);
 		
 		searchedArtistAlbums = [];
 		currentArtistAlbum = undefined;
@@ -41,7 +40,7 @@
 	function spotifyArtistSearchJSONLoaded(obj){
 		if(obj.artists.items.length == 0){
 			var album = {
-				title: "No Album Found for " + searchedArtistSpotifyName,
+				title: "No Album Found",
 				imageURL: missingAlbumImage,
 			}
 				
@@ -101,7 +100,7 @@
 	function spotifyArtistAlbumJSONLoaded(obj){		
 		if(obj.items.length == 0){
 			var album = {
-				title: "No Album Found for " + searchedArtistSpotifyName,
+				title: "No Album Found",
 				imageURL: missingAlbumImage,
 			}
 			
@@ -159,7 +158,7 @@
 			}
 			else{
 				var album = {
-					title: "No Album Found for " + searchedArtistSpotifyName,
+					title: "No Album Found",
 					imageURL: missingAlbumImage,
 				}
 					
@@ -183,9 +182,6 @@
 	
 	//code adapted from http://jsfiddle.net/JMPerez/UT7bQ/187/
 	function spotifyAlbumPreview(){
-		
-		console.log("spotifyAlbumPreview was called");
-		
 		if(previewAudioPlaying == false){
 			if (previewAudio) {
                 previewAudio.pause();
@@ -258,11 +254,8 @@
 	function updateAlbumContainer(){
 		$("#content").fadeOut(250);
 		if(albumFound){
-
 			currentArtistAlbumIndex++;
 			currentArtistAlbumIndex = currentArtistAlbumIndex % searchedArtistAlbums.length;
-			console.log(currentArtistAlbumIndex);
-			
 		}
 		buildAlbumContainer();
 	}

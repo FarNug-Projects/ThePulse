@@ -95,7 +95,7 @@
 				article += "<p>";
 				article += summary;
 				article +=  "</p>";
-				article += "<a href=" + url + " target='_blank'>" + url + "</a>";
+				article += "<a href=" + url + " target='_blank'> Link to the article </a>";
 				article += "</article>";
 				
 				// Store the article entry that was just made into the array of articles.
@@ -116,7 +116,7 @@
 			// Let the user know there are no articles for the artist.
 			var article = "";
 			article += "<p>";
-			article += "No news found for searched artist.";
+			article += "No news found for searched artist";
 			article += "</p>";
 			
 			// Store the article entry that was just made into the array of articles.
